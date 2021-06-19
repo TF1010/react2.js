@@ -1,0 +1,139 @@
+::-webkit-resizer {
+    border: 1px solid rgba(37, 37, 36, 0.808);
+    border-radius: 40px;
+    background: rgba(0, 0, 255, 0.158);
+   
+    /*outline: 1px dashed rgb(48, 49, 48);
+
+    /*size does not work*/  
+    display:block; 
+
+}
+
+
+#inputDiv{
+    margin-top: 30px;
+    margin-left: 0%;
+    
+
+}
+
+
+
+input[id="labelInput1"]{
+    background-color: rgba(71, 71, 71, 0.0) !important;
+    color: rgb(41, 40, 38);
+    border: 0px solid rgba(255, 166, 0, 0);
+    min-height:   30px;
+    height: 10%;
+    max-height: 50px;
+    font-size:110%;
+}
+
+input[id="labelInput"]:active{
+    background-color: rgba(71, 71, 71, 0.068);
+    color: rgb(41, 40, 38);
+    border: 0px solid rgba(255, 166, 0, 0);
+}
+
+input[class="labelInput"]:focus{
+    background-color: rgba(71, 71, 71, 0.068);
+    color: rgb(41, 40, 38);
+    border: 1px solid black;
+    box-sizing: none !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(126, 239, 104, 0);
+    outline: 0 none;
+}
+
+.box  {
+
+    border: 2px solid #da9007;
+    position: absolute;
+    border-Radius: 2px;
+    resize: both;
+    overflow: auto;
+    cursor: pointer;
+  
+}
+
+.box:focus{
+   
+    border: 5px solid #1394cf;
+}
+
+.box:focus:hover{
+   
+    border: 5px solid #1394cf;
+}
+
+
+.box:active{
+   
+    border: 5px solid #1394cf;
+}
+
+.box:hover{
+    border: 3px solid #ffbd08;
+}
+
+.selfContainer {
+    position: absolute;
+    width: 50%;
+    height: 80%;
+}
+
+.focused{
+    border: 5px solid #1394cf !important;
+}
+
+.hovered{
+    border: 3px solid #ffbd08;
+}
+
+.border:hover{
+    border: 3px solid #ffbd08 !important;
+}
+
+.border:focus{
+    border: 5px solid #1394cf !important;
+}
+
+#leftCol{
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.box .form-control{
+    background-color: rgba(71, 71, 71, 0.0) !important;
+    color: rgb(41, 40, 38)!important;
+    border: 0px solid rgba(255, 166, 0, 0)!important;
+    min-height:   30px !important;
+    height: 10% !important;
+    max-height: 50px !important;
+    font-size:110% !important;
+
+    
+}
+
+.form-control:focus{
+    background-color: rgba(71, 71, 71, 0.068)!important;
+    color: rgb(41, 40, 38);
+    border: 1px solid black;
+    box-sizing: none !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(126, 239, 104, 0);
+    outline: 0 none;
+}
+
+
+
+.imgStyle {
+    border: 2px solid black;
+    width: auto;
+    max-width :82vh;
+    height: auto;
+    max-height: 80vh;
+    top: 100%;
+    margin-left: 0%;
+    cursor: pointer;
+    
+}
