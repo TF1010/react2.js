@@ -4,15 +4,18 @@ const app = express();
 const fs = require("fs");
 app.use(express.json());
 app.use(cors());
-
+var i = 0;
 
 app.post("/x", (req, res) => {
     console.log(req.body);
-    fs.appendFile("results.json", JSON.stringify(req.body), (err) => {
+
+    fs.writeFile("results"+i+".json", JSON.stringify(req.body), (err) => {
+      i = i+1;
         if (err)
           console.log(err);
         else {
           console.log("File written successfully\n");}});
+
     res.end();
 
 } );
