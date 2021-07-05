@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import "./ImageAnnotation.css"
 
 
@@ -11,7 +10,6 @@ class ImageAnnotation extends Component {
     this.state = {
 
         count : 1,
-        /*imageUrl : "https://image.geo.de/30042248/t/5d/v3/w960/r0/-/loewe-gross-jpg--17148-.jpg",*/
         imageUrl : "https://th.bing.com/th/id/OIP.qgURzPzxSIrplEZeHR1t7wHaJ4?pid=ImgDet&rs=1",
         width : "200px",
         height : "200px",
@@ -19,16 +17,10 @@ class ImageAnnotation extends Component {
         y : "0px",
         offsetx : "0",
         offsety : "0",
-        marginL : "0",
         pressed : "false",
         pressedResize : "false",
         firstGrapX : "0",
         firstGrapY : "0",
-        imageWidth : "0",
-        imageHeight : "0",
-        originalImageWidth : "0",
-        index : 0,
-
         };
     }
 
@@ -38,7 +30,6 @@ class ImageAnnotation extends Component {
     BoxYPositions = Array(50).fill("0px"); 
     BoxWidth = Array(50).fill("80px");
     BoxHeight = Array(50).fill("80px");
-    marginL = Array(50).fill("0%");
     mWidth = Array(50).fill("200px");
     mHeight = Array(50).fill("200px");
     mapArray = [...Array(50).keys()];
@@ -65,16 +56,16 @@ class ImageAnnotation extends Component {
                
                
            }
-           //ein setstate hinzufügen, damit di App direkt gerendert wird. Andererseits wird die Box nicht sofort gelöscht
+           //ein setstate hinzufügen, damit die App direkt gerendert wird. Andererseits wird die Box nicht sofort gelöscht
            this.setState({
-               marginL: "0",
+               
            })
               
            
        }
 
 
-       handlerEventGetCurrentWidthAndHeight = (event, id) => {
+       handlerEventPressedBox = (event, id) => {
             var idNumber = parseInt(id,10);
             var boxLeft = document.getElementById(id).offsetLeft;
             var boxTop = document.getElementById(id).offsetTop;
@@ -120,10 +111,14 @@ class ImageAnnotation extends Component {
             var idNumber = parseInt(id,10);
             var pos1 = this.state.firstGrapX - event.pageX;
             var pos2 = this.state.firstGrapY - event.pageY;
-            var imageLeft = document.getElementById("image").offsetLeft;
-            var imageTop = document.getElementById("image").offsetTop;
-            var imageX = document.getElementById("image").offsetWidth;
-            var imageY = document.getElementById("image").offsetHeight;
+            //Auf allen Seiten um das Bild ist ein 2px großer Rand,
+            // offsetLeftgibt die Position des Images inkl. dem Rand an, das eigentliche Bild kommt erst nach dem Rand
+            // deshalb muss man 2 px aufaddieren, bzw. bei der Weite (offsetWidth) muss man 4 px abziehen, da die Weite 
+            // auch die 2 px Rand auf beiden Seiten enthält
+            var imageLeft = document.getElementById("image").offsetLeft+2;
+            var imageTop = document.getElementById("image").offsetTop+2;
+            var imageX = document.getElementById("image").offsetWidth-4;
+            var imageY = document.getElementById("image").offsetHeight-4;
             var boxLeft = document.getElementById(id).offsetLeft;
             var boxTop = document.getElementById(id).offsetTop;
             var boxX = document.getElementById(id).offsetWidth;
@@ -136,7 +131,6 @@ class ImageAnnotation extends Component {
                 //Damit Rechteck nicht über linken Bildrand herausbewegt werden kann:
                 if(boxLeft - pos1 < imageLeft){
                     this.setState({
-                        marginL : "0%",
                         firstGrapX : event.nativeEvent.pageX,
                         firstGrapY : event.nativeEvent.pageY,
                         offsetx: parseInt(this.BoxXPositions[idNumber], 10) - imageLeft,
@@ -160,7 +154,7 @@ class ImageAnnotation extends Component {
                 //Damit Rechteck nicht über oberen Bildrand herausbewegt werden kann:
                 else if(boxTop - pos2 < imageTop){
                     this.setState({
-                        marginL : "0%",
+                        
                         firstGrapX : event.nativeEvent.pageX,
                         firstGrapY : event.nativeEvent.pageY,
                         offsetx: parseInt(this.BoxXPositions[idNumber], 10) - imageLeft,
@@ -184,7 +178,7 @@ class ImageAnnotation extends Component {
                 //Damit Rechteck nicht über rechten Bildrand herausbewegt werden kann:
                 else if(boxLeft + boxX - pos1 > imageLeft + imageX){
                     this.setState({
-                        marginL : "0%",
+                        
                         firstGrapX : event.nativeEvent.pageX,
                         firstGrapY : event.nativeEvent.pageY,
                         offsetx: parseInt(this.BoxXPositions[idNumber], 10) - imageLeft,
@@ -208,7 +202,6 @@ class ImageAnnotation extends Component {
                 //Damit Rechteck nicht über unteren Bildrand herausbewegt werden kann:
                 else if(boxTop + boxY - pos2 > imageTop + imageY){
                     this.setState({
-                        marginL : "0%",
                         firstGrapX : event.nativeEvent.pageX,
                         firstGrapY : event.nativeEvent.pageY,
                         offsetx: parseInt(this.BoxXPositions[idNumber], 10) - imageLeft,
@@ -236,15 +229,8 @@ class ImageAnnotation extends Component {
 
                 else{
                     this.setState({
-                            originalImageWidth : document.getElementById("image").naturalWidth,
-                            imageWidth : imageX,
-                            marginL:"0%",
-                            //width: document.getElementById(this.state.index).offsetWidth,
-                            //height: document.getElementById(this.state.index).offsetHeight,
                             firstGrapX : event.nativeEvent.pageX,
                             firstGrapY : event.nativeEvent.pageY,
-                            //x :  boxLeft - pos1 + "px",
-                            //y :  boxTop - pos2 + "px",
                             offsetx: parseInt(this.BoxXPositions[idNumber], 10) - imageLeft,
                             offsety: parseInt(this.BoxYPositions[idNumber], 10) - imageTop,
                         })
@@ -287,14 +273,15 @@ class ImageAnnotation extends Component {
             this.pressed[idNumber] = "false";
         }
 
-        /*if (event.type === "mouseout"){
+        /* Ist für den Benutzer nicht angenehm:
+        if (event.type === "mouseout"){
             this.setState({
                 pressed : "false",
                 pressedResize : "false",
             })
             this.pressed[idNumber] = "false";
-        }*/
-
+        }
+        */
 
        }
 
@@ -302,6 +289,7 @@ class ImageAnnotation extends Component {
        //und dann ggfs. laden. Falls es sich um ein Bild handelt: Alle Rechtecke zurücksetzen
 
        handleLinkInput = (event) => {
+           if (event.keyCode == "13" || event.type=="click"){
             var name = event.target.name;
             var value = document.getElementById("inputLink").value;
             var regex = new RegExp("\.jpg$|\.jpeg$|\.png$|\.webp$|img|Img");
@@ -320,6 +308,7 @@ class ImageAnnotation extends Component {
                 }
 
             }
+        }
 
        }
 
@@ -328,10 +317,10 @@ class ImageAnnotation extends Component {
 
        //document.getElementById("image").offsetWidth , offsetTop etc.
        handleEventonImage = (event) => {
-        var imageLeft = document.getElementById("image").offsetLeft;
-        var imageTop = document.getElementById("image").offsetTop;
-        var imageX = document.getElementById("image").offsetWidth;
-        var imageY = document.getElementById("image").offsetHeight;
+        var imageLeft = document.getElementById("image").offsetLeft+2;
+        var imageTop = document.getElementById("image").offsetTop+2;
+        var imageX = document.getElementById("image").offsetWidth-4;
+        var imageY = document.getElementById("image").offsetHeight-4;
         var left = event.pageX - document.getElementById("leftCol").offsetWidth;
         var i = 0;
         while(this.createNewBox[i]){
@@ -340,11 +329,11 @@ class ImageAnnotation extends Component {
         console.log("s", left, "box", left, "offset", parseInt(event.nativeEvent.offsetX,10))
         this.BoxXPositions[i] = event.pageX -document.getElementById("leftCol").offsetWidth - 40 + "px";//parseInt(event.nativeEvent.offsetX,10)-40 + "px";//
         //this.BoxXPositions[i] = parseInt(event.nativeEvent.offsetX,10) + "px";
-        this.BoxYPositions[i] = event.pageY -40 + "px";
+        this.BoxYPositions[i] = event.pageY - 40 + "px";
         if(left<parseInt(this.BoxWidth[i],10)){
             
             this.BoxWidth[i] = left + "px" ;
-            this.BoxXPositions[i] = imageLeft ;
+            this.BoxXPositions[i] = imageLeft;
             
         }
 
@@ -366,10 +355,8 @@ class ImageAnnotation extends Component {
                 this.createNewBox[i] = "true";
                 
            this.setState({
-                index : this.state.index + 1,
                 offsetx : parseInt(this.BoxXPositions[i],10) - imageLeft,
                 offsety : parseInt(this.BoxYPositions[i],10), 
-                marginL : "0%",
            })}
 
 
@@ -409,8 +396,8 @@ class ImageAnnotation extends Component {
             //Vorschau Bild und Echtes Bild haben unterschiedliche Größen
             //Es muss also mit einem Faktor die Box Positionen zuerst umgerechnet werden
             //Alternativ könnte man auch relative  % Werte nehmen, dann muss man die absolute Pixelzahl nicht umrechnen
-            var FaktorX = document.getElementById("image").naturalWidth/document.getElementById("image").offsetWidth;
-            var FaktorY = document.getElementById("image").naturalHeight/document.getElementById("image").offsetHeight;
+            var FaktorX = document.getElementById("image").naturalWidth/(document.getElementById("image").offsetWidth-4);
+            var FaktorY = document.getElementById("image").naturalHeight/(document.getElementById("image").offsetHeight-4);
             var x2 = [];
             var y2 = [];
             var result = [];
@@ -418,8 +405,9 @@ class ImageAnnotation extends Component {
             for(var i = 0; i<50; i++){
                 if(this.createNewBox[i]){
                     console.log("W",parseInt(this.BoxXPositions[i],10));
-                    this.BoxXPositions[i] = parseInt(this.BoxXPositions[i],10)*FaktorX;
-                    this.BoxYPositions[i] = parseInt(this.BoxYPositions[i],10)*FaktorY;
+                    //img hat 2 px Rand, dieser muss abgezogen werden, da er momentan zur X und Y Position dazuzählt
+                    this.BoxXPositions[i] = (parseInt(this.BoxXPositions[i],10)-17)*FaktorX;
+                    this.BoxYPositions[i] = (parseInt(this.BoxYPositions[i],10)-2)*FaktorY;
                     this.BoxWidth[i] = document.getElementById(i+"").offsetWidth*FaktorX;
                     this.BoxHeight[i] = document.getElementById(i+"").offsetHeight*FaktorY;
                     x2[i] = this.BoxXPositions[i]+this.BoxWidth[i];
@@ -439,7 +427,9 @@ class ImageAnnotation extends Component {
                 body: JSON.stringify(result),
                 
                 
-            })
+            }
+            )
+            alert("Daten gespeichert")
 
         
         }
@@ -469,6 +459,7 @@ class ImageAnnotation extends Component {
                     <h1>x: {this.state.offsetx}</h1>
                         
                         <h1>y: {this.state.offsety}</h1>
+                        
                         <h3> Box erstellen mit Klick auf Bild</h3>
                         <h3>Zum Löschen einer Box auf "entf" klicken</h3>   
                     {this.mapArray.map(i => { return this.createNewBox[i] ? 
@@ -489,29 +480,32 @@ class ImageAnnotation extends Component {
                         {this.mapArray.map(i => { return this.createNewBox[i] ? 
                         <div className = "box" tabIndex="0" id = {i+""} 
                             onKeyDown = {(e)=>{this.deleteBox(e, i)}}
-                            onMouseDown = {(e) => {this.handlerEventGetCurrentWidthAndHeight(e, i)}} 
+                            onMouseDown = {(e) => {this.handlerEventPressedBox(e, i)}} 
                             onMouseUp = {(e) => {this.handlerEventMouseMove(e, i)}}  
                             onMouseMove = {(e) => {this.handlerEventMouseMove(e, i)}} 
                             onMouseLeave = {(e) => {this.handlerEventMouseMove(e, i)}}
                             onMouseOut = {(e) => {this.handlerEventMouseMove(e, i)}} 
                             style={{ zIndex: this.setZIndex[i], left:this.BoxXPositions[i], top:this.BoxYPositions[i],
-                            marginLeft : this.state.marginL,
-                            width: this.BoxWidth[i], height: this.BoxHeight[i], maxWidth:this.mWidth[i], 
+                            width: this.BoxWidth[i], height: this.BoxHeight[i], maxWidth: this.mWidth[i], 
                             maxHeight: this.mHeight[i]}}>
                             <input onChange = {(e) => {this.setGutterText(e,i)}} 
                             id={i+"labelPicture"} className = "labelInput form-control" type="text" >
                             </input>
                             </div> : false })}
                             <div id="inputDiv" >
-                        <form className ="form-floating">
+                        
                             <div className = "input-group mb-3">
-                                <input id = "inputLink" className = "form-control" type="text" />
+                                <input id = "inputLink" 
+                                placeholder="https://th.bing.com/th/id/OIP.qgURzPzxSIrplEZeHR1t7wHaJ4?pid=ImgDet&rs=1" 
+                                className = "form-control" type="text" 
+                                onKeyDown = {(e) => this.handleLinkInput(e)} />
+                                
                                 <label class="form-label" for="inputLink"></label>
                             
                             
-                           <submit type="button" className="btn btn-md btn-outline-secondary" onClick = {this.handleLinkInput}>Bild laden</submit>
+                           <submit type="button" className="btn btn-md btn-outline-secondary" onClick = {(e) => this.handleLinkInput(e)}>Bild laden</submit>
                            </div>
-                        </form>   
+                           
                         <submit type="button" className="btn btn-md btn-info" onClick={this.saveData}>Save</submit> 
                     </div> 
                    </div>
